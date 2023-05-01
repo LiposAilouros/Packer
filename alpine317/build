@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eux
+VMNAME="alpine-$(date +%Y%m%d-%H%M%S)"
+PACKER_LOG=1 packer build -force -var "password=Your-PassWord1357" -var "vm="${VMNAME}"" packer.json 
