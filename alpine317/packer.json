@@ -2,27 +2,24 @@
   "builders": [
     {
       "boot_command": [
-         "root<enter><wait>",
-         "ifconfig eth0 up && udhcpc -i eth0<enter><wait5>",
-         "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/answer<enter><wait>",
-         "setup-alpine -f answer<enter><wait15>",
-         "{{user `password`}}<enter><wait>",
-         "{{user `password`}}<enter><wait20>",
-         "<wait>no<enter><wait20>",
-	 "<wait>y<enter><wait20>",
-         "reboot<enter><wait20>",
-	 "root<enter><wait>",
-	 "{{user `password`}}<enter><wait>",
-         "rc-service sshd stop<enter><wait10>",
-	 "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config<enter>",
-	 "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/authorized_keys<enter><wait>",
-	 "mkdir -p /root/.ssh<enter>",
-	 "cp authorized_keys /root/.ssh/<enter>",
-	 "rc-service sshd start<enter><wait10>"
+        "root<enter><wait>",
+        "ifconfig eth0 up && udhcpc -i eth0<enter><wait5>",
+        "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/answer<enter><wait>",
+        "setup-alpine -f answer<enter><wait60>",
+        "{{user `password`}}<enter><wait>",
+        "{{user `password`}}<enter><wait20>",
+        "<wait>no<enter><wait30>",
+	    "<wait>y<enter><wait120>",
+        "reboot -f<enter><wait80>",
+	    "root<enter><wait>",
+	    "{{user `password`}}<enter><wait>",
+        "rc-service sshd stop<enter><wait20>",
+	    "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config<enter>",
+	    "rc-service sshd start<enter><wait10>"
       ],
-      "boot_wait": "60s",
+      "boot_wait": "120s",
       "disk_interface": "virtio",
-      "disk_size": "1000M",
+      "disk_size": "768M",
       "disk_compression": "true",
       "format": "qcow2",
       "headless": true,
@@ -33,7 +30,7 @@
       "shutdown_command": "poweroff",
       "ssh_password": "{{user `password`}}",
       "http_directory": "httpdir",
-      "ssh_timeout": "6000s",
+      "ssh_timeout": "600s",
       "ssh_username": "root",
       "type": "qemu",
       "vm_name": "{{user `vm`}}.qcow2",
@@ -43,8 +40,8 @@
   "provisioners": [
     {
       "environment_vars": [
-        "ROOT_PASSWORD={{user `password`}}",
-      ,
+      "ROOT_PASSWORD={{user `password`}}"
+      ],
       "script": "setup.sh",
       "type": "shell"
     }

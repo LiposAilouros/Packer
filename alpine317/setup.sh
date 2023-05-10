@@ -9,6 +9,7 @@ apk add e2fsprogs
 apk add util-linux
 apk add e2fsprogs-extra
 apk add python3 py3-pip py3-netifaces py3-pyserial
+apk add iptables
 apk add cloud-init
 setup-cloud-init
 apk upgrade 
