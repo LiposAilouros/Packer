@@ -1,0 +1,28 @@
+#!/bin/sh
+set -eux
+createhttpdserver() {
+# Create http server 
+cd "${DIR}/images/" 
+python3 -m http.server > /dev/null 2>&1 &
+pyd=$!
+export BLA="$pyd"
+}
+
+DIR="/home/debian/alpine3182"
+# Set log file
+LOG="${DIR}/buildlog_$(date +%Y-%m-%d_%Hh%M).log"
+touch "${LOG}"
+exec 1>"${LOG}"
+exec 2>&1
+VMNAME="alpine3182-cloudinit-$(date +%Y%m%d-%H%M%S)"
+export PACKER_LOG=1
+export PACKER_LOG_PATH="${DIR}/packerlog_$(date +%Y-%m-%d_%Hh%M).log"
+# Generate random password for root
+rootpassword=$(tr -dc 'A-Za-z0-9"#$%()*+,-./:;<=>?@[\]_{}~' </dev/urandom | head -c 30)
+# Building image
+packer build -force -var "password=${rootpassword}" -var "vm="${VMNAME}"" ${DIR}/packer.json 
+
+# Publish image on nutanix cluster for testing 
+createhttpdserver
+URL="http://xxx.xxx.xxx.xxx:8000/$VMNAME.qcow2"
+bash ${DIR}/publishoncluster.sh "pass" "cluster" "$URL"
