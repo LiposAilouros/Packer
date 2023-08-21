@@ -21,6 +21,7 @@ Launch building.
 ```bash
 build &
 ```
+root password is set randomly you could change it if needed.
 
 Once image is build you could use it with cloud-init file.
 
