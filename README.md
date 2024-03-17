@@ -39,6 +39,7 @@ if you want to change password or user change in both files :
 answer_files/11-uefi-fr/Autounattend.xml
 windows11EFI-fr.json
 
+
 3- Windows 2019 fr uefi QEMU image
 =================
 
@@ -51,6 +52,8 @@ bash build &
 The script will calculate sha256 from iso image and launch qcow2 build.
 
 This will install os for the second entry of the ISO, you'll need to change in the answer file "INDEX" with the correct entry.
+
+Image is "sysprep" ready. You'll need to setup a password at the fisrt boot.
 
 4- Todo 
 ================
