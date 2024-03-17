@@ -8,12 +8,12 @@ Just some pocs/study in order to deploy some vm on Nutanix Clusters
 sudo apt install packer qemu-kvm virt-manager virtinst libvirt-clients bridge-utils libvirt-daemon-system remmina ovmf -y
 ```
 
-ovmf it's for UEFI support.
+Yes there is remina because I usually connect to the packer vm to follow (and debug) build throught VNC.
 
 
-1 - Alpine 3.17 QEMU image
+1 - Alpine QEMU image
 =================
-How to setup a fonctional Alpine Linux (3.17) qcow2 image with a working cloud-init for Nutanix Cluster (6.5)
+How to setup a fonctional Alpine Linux (3.18.2) qcow2 image with a working cloud-init for Nutanix Cluster (6.5)
 
 root password is set randomly you could change it if needed.
 
@@ -21,17 +21,11 @@ Launch building.
 ```bash
 build &
 ```
-root password is set randomly you could change it if needed.
-
 Once image is build you could use it with cloud-init file.
 
 In build file you could find an example tu create an http server and use it with script.
 
-2 - Alpine 3.18.2 QEMU image
-=================
-same process
-
-3- Windows 11 QEMU image
+2- Windows 11 QEMU image
 =================
 
 Download regular image from microsoft or uupdump https://uupdump.net/ (download and build your iso).
@@ -45,6 +39,22 @@ if you want to change password or user change in both files :
 answer_files/11-uefi-fr/Autounattend.xml
 windows11EFI-fr.json
 
+3- Windows 2019 fr uefi QEMU image
+=================
+
+download virtio image in the base directory.
+download windows 2019 french iso image in the OS_ISO directory.
+launch 
+```bash
+bash build & 
+```
+The script will calculate sha256 from iso image and launch qcow2 build.
+
+This will install os for the second entry of the ISO, you'll need to change in the answer file "INDEX" with the correct entry.
+
+4- Todo 
+================
+download virtio image directly from sources (fedora) 
 
 Origin & References
 -------------------
