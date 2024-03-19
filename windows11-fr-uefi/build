@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eux
+createhttpdserver() {
+# Create http server
+cd "${DIR}/images/"
+python3 -m http.server > /dev/null 2>&1 &
+pyd=$!
+export BLA="$pyd"
+}
+
+DIR=$(pwd)
+# Set log file
+LOG="${DIR}/buildlog_$(date +%Y-%m-%d_%Hh%M).log"
+touch "${LOG}"
+exec 1>"${LOG}"
+exec 2>&1
+VMNAME="windows11_pro_UEFI-fr-FR-ovh-$(date +%Y%m%d-%H%M%S)"
+export PACKER_LOG=1
+export PACKER_LOG_PATH="${DIR}/packerlog_$(date +%Y-%m-%d_%Hh%M).log"
+# Building image
+packer build -force -var "vm_name="${VMNAME}"" ${DIR}/windows11EFI-fr.json
