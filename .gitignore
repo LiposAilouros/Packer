@@ -1,0 +1,8 @@
+windows2019-fr-uefi/OS_ISO/*
+windows2019-fr-uefi/*.log
+windows2019-fr-uefi/packer_cache/
+windows2019-fr-uefi/virtio-win.iso
+windows2022-us-uefi/OS_ISO/*
+windows2022-us-uefi/*.log
+windows2022-us-uefi/packer_cache/
+windows2022-us-uefi/virtio-win.iso
