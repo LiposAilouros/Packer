@@ -16,8 +16,7 @@
         "./scripts/disable-winrm.ps1",
         "./scripts/enable-winrm.ps1",
         "./scripts/microsoft-updates.bat",
-        "./scripts/win-updates.ps1",
-        "./scripts/InstallSoftware.ps1"
+        "./scripts/win-updates.ps1"
       ],
       "format": "qcow2",
       "headless": true,
@@ -25,40 +24,35 @@
       "iso_url": "{{user `iso_url`}}",
       "memory": "{{user `memory`}}",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "output_directory": "windows_11-qemu",
+      "output_directory": "images",
       "type": "qemu",
       "qemuargs": [
 	[ "-bios", "/usr/share/OVMF/OVMF_CODE.fd" ],
-        ["-drive", "file=windows_11-qemu/{{ .Name }},if=virtio,cache=writeback,discard=ignore,format=qcow2,index=1"],
+        ["-drive", "file=images/{{ .Name }},if=virtio,cache=writeback,discard=ignore,format=qcow2,index=1"],
         ["-drive", "file={{ user `iso_url` }},media=cdrom,index=2"],
         ["-drive","file={{ user `virtio_win_iso` }},media=cdrom,index=3"]
       ],
       "vm_name": "{{user `vm_name`}}.qcow2",
       "winrm_port": "5985",
-      "winrm_password": "S0m3Pa55w0rd",
+      "winrm_password": "MySecurePassword",
       "winrm_timeout": "{{user `winrm_timeout`}}",
-      "winrm_username": "ovh",
+      "winrm_username": "Administrateur",
       "net_device": "virtio-net",
+      "http_directory": "./scripts",
       "vnc_bind_address": "0.0.0.0"
     
     }
   ],
 
   "provisioners": [
-    {
+     {
       "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
       "remote_path": "/tmp/script.bat",
       "scripts": [
+        "./scripts/dis-updates.bat",
         "./scripts/enable-rdp.bat"
       ],
       "type": "windows-shell"
-    },
-    {
-      "scripts": [
-        "./scripts/debloat-windows.ps1",
-	"./scripts/InstallSoftware.ps1"	
-      ],
-      "type": "powershell"
     },
     {
       "restart_timeout": "{{user `restart_timeout`}}",
@@ -66,20 +60,19 @@
     },
     {
       "scripts": [
-        "./scripts/set-powerplan.ps1",
-	"./scripts/InstallSoftware.ps1"
+	"./scripts/installwinget.ps1",
+	"./scripts/installapps.ps1",
+	"./scripts/debloat-windows.ps1"
       ],
       "type": "powershell"
     },
-    {
+   {
       "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
       "remote_path": "/tmp/script.bat",
       "scripts": [
         "./scripts/compile-dotnet-assemblies.bat",
         "./scripts/set-winrm-automatic.bat",
-        "./scripts/debloat-windows.bat",
         "./scripts/uac-enable.bat",
-        "./scripts/dis-updates.bat",
         "./scripts/disable-auto-logon.bat",
         "./scripts/compact.bat"
       ],
@@ -87,19 +80,18 @@
     }
       ],
   "variables": {
-    "autounattend": "./answer_files/11-uefi-fr/Autounattend.xml",
+    "autounattend": "./answer_files/11-uefi-fr-admin/Autounattend.xml",
     "disk_size": "61440",
     "disk_type_id": "1",
     "memory": "4096",
     "headless": "false",
-    "iso_checksum": "",
-    "iso_url": "", 
+    "iso_checksum": "sha256:c1f955aa2c280ec9987ab114084211a25e13a64aebee152c0c67024b1e34f230",
+    "iso_url": "./22631.3227.240209-1751.23H2_NI_RELEASE_SVC_PROD2_CLIENTPRO_OEMRET_X64FRE_FR-FR.ISO", 
     "restart_timeout": "5m",
     "vhv_enable": "false",
-    "virtio_win_iso": "",
+    "virtio_win_iso": "./virtio-win.iso",
     "vm_name": "",
-    "winrm_timeout": "6h",
-    "vmx_version": "14"
+    "winrm_timeout": "6h"
   }
 }
 
