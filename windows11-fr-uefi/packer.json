@@ -80,7 +80,7 @@
     }
       ],
   "variables": {
-    "autounattend": "./answer_files/11-uefi-fr-admin/Autounattend.xml",
+    "autounattend": "./answer_files/11-uefi-fr/Autounattend.xml",
     "disk_size": "61440",
     "disk_type_id": "1",
     "memory": "4096",
