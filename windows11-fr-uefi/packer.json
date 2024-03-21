@@ -24,7 +24,7 @@
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_url": "{{user `iso_url`}}",
       "memory": "{{user `memory`}}",
-      "shutdown_command": "a:/sysprep.bat",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "output_directory": "images",
       "type": "qemu",
       "qemuargs": [
