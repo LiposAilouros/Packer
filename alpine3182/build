@@ -1,12 +1,5 @@
 #!/bin/sh
 set -eux
-createhttpdserver() {
-# Create http server 
-cd "${DIR}/images/" 
-python3 -m http.server > /dev/null 2>&1 &
-pyd=$!
-export BLA="$pyd"
-}
 
 DIR="/home/debian/alpine3182"
 # Set log file
@@ -22,7 +15,3 @@ rootpassword=$(tr -dc 'A-Za-z0-9"#$%()*+,-./:;<=>?@[\]_{}~' </dev/urandom | head
 # Building image
 packer build -force -var "password=${rootpassword}" -var "vm="${VMNAME}"" ${DIR}/packer.json 
 
-# Publish image on nutanix cluster for testing 
-createhttpdserver
-URL="http://xxx.xxx.xxx.xxx:8000/$VMNAME.qcow2"
-bash ${DIR}/publishoncluster.sh "pass" "cluster" "$URL"
