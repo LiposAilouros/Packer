@@ -13,3 +13,4 @@ windows11-fr-uefi/*.log
 windows11-fr-uefi/packer_cache/
 windows11-fr-uefi/images/
 windows11-fr-uefi/virtio-win.iso
+windows2025-us-uefi/

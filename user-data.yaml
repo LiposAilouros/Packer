@@ -1,0 +1,47 @@
+#cloud-config
+hostname: packer
+fqdn: packer.domain.local
+users:
+  - name: packerworker
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    groups: sudo
+    shell: /bin/bash
+    lock_passwd: false
+    ssh_pwauth: true
+    plain_text_passwd: MySecurePassword 
+write_files:
+   - path: /etc/netplan/50-cloud-init.yaml
+     content: |
+        network:
+           version: 2
+           renderer: networkd
+           ethernets:
+              ens3:
+                addresses: [172.16.3.23/22]
+                routes:
+                  - to: default
+                    via: 172.16.3.254
+                nameservers:
+                  addresses: [1.1.1.1,9.9.9.9]
+                optional: true
+
+runcmd:
+   - export DEBIAN_FRONTEND=noninteractive
+   - netplan generate
+   - netplan apply
+   - apt update && apt upgrade -y
+   - apt install net-tools open-vm-tools curl xfce4 xfce4-goodies --no-install-recommends -y
+   - apt-get install cloud-image-utils xrdp firefox -y
+   - echo "xfce4-session" | tee /home/packerworker/.xsession
+   - cp /home/ovh/.bashrc /root/.bashrc
+   - sed -i s/32/31/g /root/.bashrc && source /root/.bashrc
+   - sed -i s/"#PasswordAuthentication"/"PasswordAuthentication"/g /etc/ssh/sshd_config
+   - sed -i s/"KbdInteractiveAuthentication no"/"KbdInteractiveAuthentication yes"/g /etc/ssh/sshd_config
+   - service ssh restart
+   - apt install packer qemu-kvm virt-manager virtinst libvirt-clients bridge-utils libvirt-daemon-system remmina ovmf -y
+   - usermod -aG kvm packerworker
+   - usermod -aG libvirt packerworker
+   - reboot
+
+final_message: "The system is finally up, after $UPTIME seconds"
+

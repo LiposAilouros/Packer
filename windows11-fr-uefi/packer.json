@@ -15,6 +15,7 @@
         "./scripts/disable-screensaver.ps1",
         "./scripts/disable-winrm.ps1",
         "./scripts/enable-winrm.ps1",
+	"./scripts/sysprep.bat",
         "./scripts/microsoft-updates.bat",
         "./scripts/win-updates.ps1"
       ],
@@ -23,7 +24,7 @@
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_url": "{{user `iso_url`}}",
       "memory": "{{user `memory`}}",
-      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "shutdown_command": "a:/sysprep.bat",
       "output_directory": "images",
       "type": "qemu",
       "qemuargs": [

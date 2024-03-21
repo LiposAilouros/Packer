@@ -2,6 +2,7 @@
 #    https://www.microsoft.com/en-us/p/app-installer/9nblggh4nns1
 # 2. Edit the list of apps to install.
 # 3. Run this script as administrator.
+
 $apps = @(
     @{name = "7zip.7zip" }
     #@{name = "Adobe.Acrobat.Reader.64-bit" },
@@ -18,11 +19,8 @@ $apps = @(
     @{name = "Notepad++.Notepad++" },
     @{name = "WinSCP.WinSCP" }
 );
-wget -Uri "https://github.com/microsoft/winget-cli/releases/download/v1.7.10582/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -OutFile "c:\tmp\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle"
-#wget -uri "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -OutFile  "c:\tmp\Microsoft.VCLibs.14.00.Desktop.appx"
-Add-AppxProvisionedPackage -Online -PackagePath "c:\tmp\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -SkipLicense
-Start-Sleep -Seconds 220
 winget source reset --force
+Start-Sleep -Seconds 60 
 winget upgrade --all --accept-source-agreements
 winget source update
 winget list  --accept-source-agreements -s winget

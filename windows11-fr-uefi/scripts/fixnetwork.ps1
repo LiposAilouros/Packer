@@ -4,7 +4,6 @@
 # http://msdn.microsoft.com/en-us/library/windows/desktop/aa370750(v=vs.85).aspx
 # For more info, see:
 # http://blogs.msdn.com/b/powershell/archive/2009/04/03/setting-network-location-to-private.aspx
-
 function Set-NetworkTypeToPrivate {
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPositionalParameters', '')]
   param()
@@ -20,11 +19,12 @@ function Set-NetworkTypeToPrivate {
   $connections = $networkListManager.GetNetworkConnections()
 
   $connections | ForEach-Object {
+    Write-Output "function DEBUG"
     Write-Output $_.GetNetwork().GetName() "category was previously set to" $_.GetNetwork().GetCategory()
     #$_.GetNetwork().SetCategory(1)
     Write-Output $_.GetNetwork().GetName() "changed to category" $_.GetNetwork().GetCategory()
   }
 
 }
-
+Write-Output "Setting Network to private"
 Set-NetworkTypeToPrivate
