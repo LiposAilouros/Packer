@@ -7,7 +7,7 @@ LOG="${DIR}/buildlog_$(date +%Y-%m-%d_%Hh%M).log"
 touch "${LOG}"
 exec 1>"${LOG}"
 exec 2>&1
-VMNAME="windows11_pro_UEFI-fr-FR-$(date +%Y%m%d-%H%M%S)"
+VMNAME="windows11_pro_UEFI-fr-FR"
 export PACKER_LOG=1
 export PACKER_LOG_PATH="${DIR}/packerlog_$(date +%Y-%m-%d_%Hh%M).log"
 # Building image
