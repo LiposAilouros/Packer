@@ -1,9 +1,11 @@
 # Packer 
 =================
 
-Just some pocs/study in order to deploy some vm on Nutanix Clusters
+Just some pocs/study in order to deploy some vm on Nutanix Clusters, those image are also usable with some OVHcloud baremetal server (Bring Your Own Image feature) 
 
-Clone repo, create vm packer (with script included) or use a personnal computer, for windows, upload ISO image in windowsxxxx/OS_ISO, then launch build script.
+Clone repo, create vm packer (with script included) or use a personnal computer with packer, for windows, upload ISO image in windowsxxxx/OS_ISO, then launch build script.
+
+Install Packer : https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli
 
 Alpine image
 =================
