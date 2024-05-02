@@ -1,11 +1,17 @@
 # Packer 
 =================
 
-Just some pocs/study in order to deploy some vm on Nutanix Clusters, those image are also usable with some OVHcloud baremetal server (Bring Your Own Image feature) 
+Just some pocs/study in order to deploy some vm on Nutanix Clusters, Windows image are also usable with some OVHcloud baremetal server (Bring Your Own Image feature).
 
-Clone repo, create vm packer (with script included) or use a personnal computer with packer, for windows, upload ISO image in windowsxxxx/OS_ISO, then launch build script.
+1- Clone repo
+2- Create vm packer on Nutanixcluster (with script included) or use a personnal computer with packer
+3- For windows, upload ISO image in windowsxxxx/OS_ISO
+4- Launch build script (./build &)
+5- Get vnc address in logs if you want to follow/debug process
+6- Use qcow2 file in images directory
 
 Install Packer : https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli
+
 
 Alpine image
 =================
@@ -18,6 +24,7 @@ Launch building.
 build &
 ```
 Once image is build you could use it with cloud-init file.
+
 
 Windows 11 fr uefi image
 =================
@@ -44,6 +51,27 @@ You can adapt in Autounattend.xml
 
 Image is "sysprep" ready. You'll need to setup a password at the fisrt boot.
 
+
+Windows 2019 Essential us uefi image
+=================
+Installation is based on os index (entry of os in the image) :
+https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-setup-imageinstall-osimage-installfrom-metadata-key#values
+You can adapt in Autounattend.xml
+
+Image is "sysprep" ready. You'll need to setup a password at the fisrt boot.
+
+
+Windows 2019 Essential nosysprep us uefi image
+=================
+Installation is based on os index (entry of os in the image) :
+https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-setup-imageinstall-osimage-installfrom-metadata-key#values
+You can adapt in Autounattend.xml
+
+No sysprep on this image, adapt password in both files : Autounattend.xml and packer.json.
+Default credentials are Administrator / PasswOrd4g
+Don't forget to disable autologon after install.
+
+
 Windows 2022 us uefi image
 =================
 Installation is based on os index (entry of os in the image) :
@@ -52,6 +80,7 @@ You can adapt in Autounattend.xml
 
 Image is "sysprep" ready. You'll need to setup a password at the fisrt boot.
 
+
 Todo 
 ================
 Update this repos :-) 
@@ -59,7 +88,8 @@ Update this repos :-)
 Origin & References
 -------------------
 
-BIG Thanks to thoses guys for helping me to upgrade my skills. Also thanks to Jérémy, Louis, Sylvain, thanks guys you rocks.
+BIG Thanks to thoses guys for helping me to upgrade my skills. Also thanks to Jérémy, Louis, Sylvain, Gaetan, Ioannis, Jb, thanks guys, you rocks.
 
+Inspired by :
 https://github.com/troglobit/alpine-qemu-image 
 https://github.com/StefanScherer/packer-windows 
