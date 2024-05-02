@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eux
+DIR=$(pwd)
+# Set log file
+LOG="${DIR}/buildlog_$(date +%Y-%m-%d_%Hh%M).log"
+touch "${LOG}"
+exec 1>"${LOG}"
+exec 2>&1
+curl -sSL https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso -o virtio-win.iso
+VMNAME="windows2019-essential-nosysprep-us-US-uefi"
+export PACKER_LOG=1
+export PACKER_LOG_PATH="${DIR}/packerlog_$(date +%Y-%m-%d_%Hh%M).log"
+# Building image
+iso=$(ls ${DIR}/OS_ISO) # TODO if multiple iso get the most recent
+sha=$(sha256sum ${DIR}/OS_ISO/${iso} | awk -F " " '{print $1}')
+packer build -force -var "virtio_win_iso=${DIR}/virtio-win.iso" -var "iso_url=${DIR}/OS_ISO/${iso}" -var "iso_checksum=sha256:${sha}" -var "vm_name="${VMNAME}"" ${DIR}/packer.json
