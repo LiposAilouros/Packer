@@ -1,0 +1,99 @@
+{
+  "builders": [
+    {
+      "accelerator": "kvm",
+      "boot_wait": "1s",
+      "boot_command": [ "<wait2><enter>" ],
+      "communicator": "winrm",
+      "cpus": 4,
+      "disk_size": "{{user `disk_size`}}",
+      "disk_compression": "true",
+      "disk_interface": "virtio",
+      "format": "qcow2",
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "{{ user `dir` }}/scripts/disable-screensaver.ps1",
+        "{{ user `dir` }}/scripts/enable-winrm.ps1",
+        "{{ user `dir` }}/scripts/disable-winrm.ps1",
+        "{{ user `dir` }}/scripts/microsoft-updates.bat",
+        "{{ user `dir` }}/scripts/sysprep.bat",
+        "{{ user `dir` }}/scripts/win-updates.ps1"
+      ],
+      "headless": true,
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "memory": "{{user `memory`}}",
+      "output_directory": "{{ user `dir` }}/images",
+      "qemuargs": [
+	[ "-pflash", "/usr/share/OVMF/OVMF_CODE_4M.fd" ],
+        [
+          "-drive",
+          "file={{ user `dir` }}/images/{{ .Name }},if=virtio,cache=writeback,discard=ignore,format=qcow2,index=1"
+        ],
+        [
+          "-drive",
+          "file={{ user `iso_url` }},media=cdrom,index=2"
+        ],
+        [
+          "-drive",
+          "file={{ user `virtio_win_iso` }},media=cdrom,index=3"
+        ]
+      ],
+      "shutdown_command": "a:/sysprep.bat",
+      "type": "qemu",
+      "vm_name": "{{user `vm_name`}}.qcow2",
+      "winrm_port": "5985",
+      "winrm_password": "PasswOrd4g",
+      "winrm_username": "administrateur",
+      "net_device": "virtio-net",
+      "vnc_port_max": 5980,
+      "vnc_port_min": 5900,
+      "vnc_bind_address": "0.0.0.0",
+      "winrm_timeout": "{{user `winrm_timeout`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
+      "scripts": [
+        "{{ user `dir` }}/scripts/enable-rdp.bat"
+      ],
+      "type": "windows-shell"
+    },
+    {
+      "scripts": [
+        "{{ user `dir` }}/scripts/debloat-windows.ps1"
+      ],
+      "type": "powershell"
+    },
+    {
+      "restart_timeout": "{{user `restart_timeout`}}",
+      "type": "windows-restart"
+    },
+    {
+      "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
+      "scripts": [
+        "{{ user `dir` }}/scripts/set-winrm-automatic.bat",
+        "{{ user `dir` }}/scripts/uac-enable.bat",
+        "{{ user `dir` }}/scripts/compile-dotnet-assemblies.bat",
+        "{{ user `dir` }}/scripts/dis-updates.bat",
+        "{{ user `dir` }}/scripts/compact.bat"
+      ],
+      "type": "windows-shell"
+    }
+  ],
+  "variables": {
+    "autounattend": "{{ user `dir` }}/answer_files/2022/Autounattend.xml",
+    "dir":"",
+    "disk_size": "61440",
+    "disk_type_id": "1",
+    "memory": "8192",
+    "headless": "false",
+    "iso_checksum": "",
+    "iso_url": "",
+    "restart_timeout": "5m",
+    "virtio_win_iso": "",
+    "winrm_timeout": "2h"
+  }
+}
+

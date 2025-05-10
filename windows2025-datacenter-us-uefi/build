@@ -1,0 +1,28 @@
+#!/bin/sh
+set -eux
+DIR=$(dirname "$0")
+VMNAME="windows2025-us-US-datacenter-uefi-$(date +%Y%m%d-%H%M%S)"
+# Set log file
+LOG="${DIR}/${VMNAME}.log"
+touch "${LOG}"
+exec 1>"${LOG}"
+exec 2>&1
+#/home/ovh/.config/packer/plugins/github.com/
+#packer plugins install github.com/rgl/windows-update
+#packer plugins install github.com/hashicorp/qemu
+curl -sSL https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso -o ${DIR}/virtio-win.iso
+
+
+rm -rf ${DIR}/drivers
+mkdir -p ${DIR}/drivers
+7z x -o${DIR}/drivers virtio-win.iso
+
+export PACKER_LOG=1
+export PACKER_LOG_PATH="${DIR}/logpacker_$(date +%Y-%m-%d_%Hh%M).log"
+# Building image
+iso=$(ls ${DIR}/OS_ISO) # TODO if multiple iso get the most recent
+sha=$(sha256sum ${DIR}/OS_ISO/${iso} | awk -F " " '{print $1}')
+#packer build -force -var "virtio_win_iso=${DIR}/virtio-win.iso" -var "iso_url=${DIR}/OS_ISO/${iso}" -var "iso_checksum=sha256:${sha}" -var "dir"=${DIR} -var "vm_name="${VMNAME}"" ${DIR}/custwindows-2025-uefi.pkr.hcl
+#packer build -force -var "iso_url=${DIR}/OS_ISO/${iso}" -var "iso_checksum=sha256:${sha}" -var "dir"=${DIR} -var "vm_name="${VMNAME}"" ${DIR}/custwindows-2025-uefi.pkr.hcl
+packer build -force -var "iso_url=${DIR}/OS_ISO/${iso}" -var "iso_checksum=sha256:${sha}" -var "dir"=${DIR} -var "vm_name="${VMNAME}"" ${DIR}/packer.json
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ovh/metis ${DIR}/images/${VMNAME}.qcow2 ovh@10.2.0.201:http/qcow2/windows2025-us-US-uefi-datacenter.qcow2
