@@ -14,4 +14,3 @@ export PACKER_LOG_PATH="${DIR}/packerlog_$(date +%Y-%m-%d_%Hh%M).log"
 iso=$(ls ${DIR}/OS_ISO) # TODO if multiple iso get the most recent
 sha=$(sha256sum ${DIR}/OS_ISO/${iso} | awk -F " " '{print $1}')
 packer build -force -var "dir=${DIR}" -var "virtio_win_iso=${DIR}/virtio-win.iso" -var "iso_url=${DIR}/OS_ISO/${iso}" -var "iso_checksum=sha256:${sha}" -var "vm_name="${VMNAME}"" ${DIR}/packer.json
-scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ovh/metis ${DIR}/images/${VMNAME}.qcow2  ovh@10.2.0.201:http/qcow2/windows2022-us-US-uefi-datacenter.qcow2

@@ -11,12 +11,13 @@ Just some pocs/study in order to deploy some vm on Nutanix Clusters, Windows ima
 6- Use qcow2 file in images directory
 
 Install Packer : https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli
+Install plugins :
+packer plugins install github.com/rgl/windows-update
+packer plugins install github.com/hashicorp/qemu
 
 
 Alpine image
 =================
-this will setup a fonctional Alpine Linux (3.18.2) qcow2 image with a working cloud-init for Nutanix Cluster (6.5)
-
 root password is set randomly you could change it if needed.
 
 Launch building.
@@ -59,18 +60,6 @@ https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/mi
 You can adapt in Autounattend.xml
 
 Image is "sysprep" ready. You'll need to setup a password at the fisrt boot.
-
-
-Windows 2019 Essential nosysprep us uefi image
-=================
-Installation is based on os index (entry of os in the image) :
-https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-setup-imageinstall-osimage-installfrom-metadata-key#values
-You can adapt in Autounattend.xml
-
-No sysprep on this image, adapt password in both files : Autounattend.xml and packer.json.
-Default credentials are Administrator / PasswOrd4g
-Don't forget to disable autologon after install.
-
 
 Windows 2022 us uefi image
 =================
