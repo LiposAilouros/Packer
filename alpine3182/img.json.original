@@ -1,2 +1,0 @@
-{"spec": {"name": "IMGNAME","resources": {"image_type": "DISK_IMAGE","source_uri": "http://51.210.251.66:8000/alpine-20230511-073736.qcow2","architecture": "X86_64"}},"metadata": {"kind": "image","owner_reference": {"kind": "user","uuid": "00000000-0000-0000-0000-000000000000","
-name": "admin"}}}

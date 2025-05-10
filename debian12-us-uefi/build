@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eux
+DIR=$(dirname $0)
+# Set log file
+LOG="${DIR}/buildlog_$(date +%Y-%m-%d_%Hh%M).log"
+touch "${LOG}"
+exec 1>"${LOG}"
+exec 2>&1
+VMNAME="debian12-uefi-$(date +%Y%m%d-%H%M%S)"
+export PACKER_LOG=1
+export PACKER_LOG_PATH="${DIR}/packerlog_$(date +%Y-%m-%d_%Hh%M).log"
+# Building image
+iso=$(ls ${DIR}/OS_ISO) # TODO if multiple iso get the most recent
+sha=$(sha256sum ${DIR}/OS_ISO/${iso} | awk -F " " '{print $1}')
+packer build -force -var "dir=${DIR}" -var "iso_url=${DIR}/OS_ISO/${iso}" -var "iso_checksum=sha256:${sha}" -var "vm_name="${VMNAME}"" ${DIR}/packer.json
+scp -i /home/ovh/metis ${DIR}/images/$VMNAME.qcow2  ovh@10.2.0.201:http/qcow2/debian12k10-bookworm-us-uefi.qcow2

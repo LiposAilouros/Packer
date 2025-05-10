@@ -1,0 +1,50 @@
+#cloud-config
+hostname: debiantest
+fqdn: debiantest.ovh.local
+users:
+  - name: ovh
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: sudo
+    shell: /bin/bash
+    lock_passwd: false
+    plain_text_passwd: OVHcloud/4u
+    ssh-authorized-keys:
+      - ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAE3o3zE5V6LwT2tjeNDZxB1sD1hP07Fv95IZSzeL+HlkF63Pey8QEl2kx0C+2ULvlGgbcCGoDbTCeWzHVMVtRKo3gA8NMU/E0hEelcf1oPz6WlO0KkLaY3QYWHRaCxb0tsX/SSf0psVsrAQreRG3FSnO0UoIjuxdC8ykn96ss/4JG5J/A== mlacan@FVFYW0AXHV2F
+      - ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAFha+zy6S0MHdt/PlDj1G9x5lYxAr3bHFteIqeN0TXL3A9eW2fi+iHKVG2iYj1BXDoyW/mZvZIwsB5SVIJOyJAnMAF4v1ywIKmsVzuBExYMeqdMAcFrTYYlkcNHqQxVo4uJZOLAEM8tyoU8Ya+tY4obDmuhXolkuOoyF7TeOgyCAFYU4g== mlacan@FVFJ451GQ6LW
+growpart:
+  mode: auto 
+  devices: ["/"]
+  ignore_growroot_disabled: true
+
+write_files:
+   - path: /etc/network/interfaces
+     content: |
+        auto lo
+        iface lo inet loopback
+
+        auto ens3
+        iface ens3 inet static
+        address 172.16.3.223
+        netmask 255.255.255.252
+        gateway 172.16.3.254
+
+runcmd:
+   - export DEBIAN_FRONTEND=noninteractive
+   # Setting DNS
+   - echo "nameserver 1.1.1.1" > /etc/resolv.conf
+   - growpart  /dev/sda 3 
+   - resize2fs /dev/sda3
+   - lvextend -l 100%FREE /dev/primary/root
+   - cp /home/ovh/.bashrc /root/
+   - echo "alias ssh='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'">> /root/.bashrc
+   - echo "alias ssh='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'">> /home/ovh/.bashrc
+   - sed -i s/32/31/g /root/.bashrc
+   - sed -i s/#alias/alias/g /home/ovh/.bashrc
+   - sed -i s/#alias/alias/g /root/.bashrc
+   - sed -i s/#force_color_prompt=yes/force_color_prompt=yes/g /home/ovh/.bashrc
+   - sed -i s/#force_color_prompt=yes/force_color_prompt=yes/g /root/.bashrc
+   # Install packages 
+   - apt install -y --no-install-recommends vim
+   - reboot
+
+final_message: "The system is finally up, after $UPTIME seconds"

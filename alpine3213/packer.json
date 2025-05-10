@@ -1,0 +1,56 @@
+{
+  "builders": [
+    {
+      "boot_command": [
+        "root<enter><wait>",
+        "ifconfig eth0 up && udhcpc -i eth0<enter><wait5>",
+        "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/answer<enter><wait>",
+        "setup-alpine -f answer<enter><wait60>",
+        "{{user `password`}}<enter><wait>",
+        "{{user `password`}}<enter><wait20>",
+        "<wait>no<enter><wait30>",
+	"<wait>y<enter><wait120>",
+        "reboot<enter><wait120>",
+	"root<enter><wait20>",
+	"{{user `password`}}<enter><wait>",
+        "rc-service sshd stop<enter><wait20>",
+	"echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config<enter>",
+	"rc-service sshd start<enter><wait10>"
+      ],
+      "boot_wait": "60s",
+      "cpus": 4,
+      "disk_interface": "virtio",
+      "disk_size": "750M",
+      "disk_compression": "true",
+      "format": "qcow2",
+      "headless": true,
+      "iso_checksum": "file:https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-virt-3.21.3-x86_64.iso.sha256",
+      "iso_url": "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-virt-3.21.3-x86_64.iso",
+      "net_device": "virtio-net",
+      "output_directory": "./images",
+      "shutdown_command": "poweroff",
+      "ssh_password": "{{user `password`}}",
+      "http_directory": "./httpdir",
+      "ssh_timeout": "6000s",
+      "ssh_username": "root",
+      "type": "qemu",
+      "vm_name": "{{user `vm`}}.qcow2",
+      "vnc_bind_address": "0.0.0.0"
+    }
+  ],
+  "provisioners": [
+    {
+      "environment_vars": [
+      "ROOT_PASSWORD={{user `password`}}"
+      ],
+      "script": "./setup.sh",
+      "type": "shell"
+    }
+  ],
+  "variables": {
+    "password": "",
+    "dir": "",
+    "vm": ""
+  }
+}
+

@@ -1,0 +1,75 @@
+{
+  "builders": [
+    {
+      "boot_command": [
+        "<wait100><wait><wait><wait>c<wait><wait><wait>",
+        "linux /install.amd/vmlinuz ",
+        "auto=true ",
+        "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "hostname=debian ",
+        "domain=domain.local ",
+        "interface=auto ",
+        "vga=788 noprompt quiet --<enter>",
+        "initrd /install.amd/initrd.gz<enter>",
+        "boot<enter>"
+      ],
+      "boot_wait": "10s",
+      "disk_interface": "virtio",
+      "disk_size": "5G",
+      "qemuargs": [
+        [
+          "-pflash",
+          "/usr/share/OVMF/OVMF_CODE_4M.fd"
+        ],
+        [
+          "-drive",
+          "file={{ user `dir` }}/images/{{ .Name }},if=virtio,cache=writeback,discard=ignore,format=qcow2,index=1"
+        ],
+        [
+          "-drive",
+          "file={{ user `iso_url` }},media=cdrom,index=2"
+        ]
+      ],
+      "disk_compression": "true",
+      "cpus": 4,
+      "format": "qcow2",
+      "headless": true,
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "net_device": "virtio-net",
+      "output_directory": "images",
+      "shutdown_command": "shutdown now",
+      "ssh_password": "{{user `password`}}",
+      "http_directory": "http",
+      "ssh_timeout": "6000s",
+      "memory": "4096",
+      "ssh_username": "root",
+      "type": "qemu",
+      "vm_name": "{{user `vm_name`}}.qcow2",
+      "vnc_bind_address": "0.0.0.0"
+    }
+  ],
+  "provisioners": [
+    {
+      "script": "{{ user `dir` }}/scripts/pre-install-baremetal.sh",
+      "type": "shell",
+      "execute_command": "chmod +x {{ .Path }} && sudo {{ .Path }}"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `dir` }}/scripts/make_image_bootable.sh",
+      "destination": "/tmp/make_image_bootable.sh"
+    },
+    {
+      "type": "shell",
+      "inline": "sudo mkdir /root/.ovh/ && sudo mv /tmp/make_image_bootable.sh /root/.ovh/ && sudo chmod -R +x /root/.ovh/"
+    }
+  ],
+  "variables": {
+    "password": "s0m3password",
+    "dir": "",
+    "vm": "",
+    "iso_url": "",
+    "iso_checksum": ""
+  }
+}
